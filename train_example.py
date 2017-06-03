@@ -3,8 +3,9 @@ import numpy as np
 from tf_utils import weight_variable, bias_variable, dense_to_one_hot, weight_variable_cnn
 from process_data import znormalization
 from shuffle_data import shuffle
+import time
 
-data = np.load('./feature/udp_private.npz')
+data = np.load('./feature/tcp_finger.npz')
 
 x_train = data['x_train'][:,0:7]
 y_train = data['y_train'].ravel()
@@ -69,9 +70,12 @@ for epoch_i in range(n_epochs):
 
         sess.run(optimizer, feed_dict={
             x: batch_xs, y: batch_ys, keep_prob: 0.75})
+    time1 = time.time()
     print('test (%d): ' % epoch_i + str(sess.run(accuracy,feed_dict={x: X_test,y: Y_test,keep_prob: 1.0})))
+    time2 = time.time()
+    print float(time2 - time1) / float(len(y_test))
     # grad_vals = sess.run([g for (g,v) in grads], feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.0})
     # print 'grad_vals: ', grad_vals
-    theta = sess.run(h_fc1, feed_dict={x: batch_xs, keep_prob: 1.0})
-    print theta
+    # theta = sess.run(h_fc1, feed_dict={x: batch_xs, keep_prob: 1.0})
+    # print theta
     

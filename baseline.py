@@ -1,8 +1,9 @@
 import numpy as np
 from sklearn import svm  
 from process_data import znormalization
+import time
 
-data = np.load('./feature/tcp_smtp.npz')
+data = np.load('./feature/tcp_finger.npz')
 
 x_train = data['x_train'][:,0:7]
 y_train = data['y_train'].ravel()
@@ -17,5 +18,8 @@ print X_train
 clf = svm.SVC()
 clf.fit(X_train, y_train)
 
+time1 = time.time()
 result = np.round(clf.predict(X_test))
+time2 = time.time()
+print float(time2 - time1) / float(len(y_test))
 print float(sum(result==y_test)) / float(len(y_test))

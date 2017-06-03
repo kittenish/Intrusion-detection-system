@@ -48,7 +48,7 @@
 
 \usepackage{babel}
 \begin{document}
-\title{Frame-Transformer Emotion Classification Network}
+\title{A Cost-based Approach for Fast Intrusion Detection }
 
 
 \author{Jiarui~Gao$^1$}
@@ -61,12 +61,34 @@
 
 \begin{abstract} 
 
-Emotional content is a key ingredient in user-generated videos.  
-However, due to the emotions sparsely expressed in the user-generated video,  it is very difficult to analayze emotions in  videos. In this paper, we propose a new architecture--Frame-Transformer Emotion Classification Network (FT-EC-net) to solve three highly correlated emotion analysis tasks:  emotion recognition, emotion attribution and emotion-oriented summarization. We also contribute a new dataset for emotion attribution task by annotating the ground-truth labels of attribution segments. A comprehensive set of experiments on two datasets demonstrate the effectiveness of our framework.
+The aim of Intrusion Detection System(IDS) is to maximize detection accuracy as well as minimize corresponding costs. In this paper, I present a cost-based approach utilizing neural network with GPU acceleration for fast intrusion detection. In this approach, both computational cost and feature cost are considered, and models are trained with respect to their different protocol types and services. Empirical experiments are carried out on off-line benchmark dataset NSL-KDD.
+
 \end{abstract}
-\keywords{Video emotion recognition; video emotion attribution; video emotion-oriented summarization and spatial-transformer network}
+\keywords{Neural network; Intrusion detection; anomaly detection; cost analysis.}
 
 \maketitle
+
+\section{Introduction}
+With the development of computing and Internet technology, Internet has became an important part of our daily life. However, this popularity has also brought security issues. 
+Intrusion Detection Systems(IDSs) are designed to detect attacks, which help discover, determine, and identify unauthorized use, duplication, alteration, and destruction of information systems\cite{mukkamala2005cyber}. Specifically, IDSs are able to monitor intrusions and alert network administrators if necessary.
+
+According to the detectable attacks, there are mainly three types of IDSs: misuse-based, anomaly-based, and hybrid\cite{buczak2016survey}.
+Misuse-based IDSs are designed to detect known attacks by comparing signatures of those attacks and those in the database.
+Anomaly-based IDSs have the ability for detecting zero-day attacks. The normal network are modeled and anomalies can be detected when happened.
+
+Also with respect for using environment, IDSs can be used in real-time environment of off-line environment. Off-line IDSs have been studied extensively recently. 
+However, these systems fail to provide real time information, which means they can only detect intrusions after they already happened. The challenge for real-time IDSs is the huge cost brought with the detection.
+
+In this paper, the aim is to develop a IDS which can be utilized in real-time environment with high detection accuracy. I present a cost-based approach for anomaly intrusion detection. The traditional machine learning models are replaced by neural networks, which enable the computational cost to be minimized utilizing GPU acceleration. 
+Also, the feature cost is considered, and according to the feature cost theory in \cite{lee2001real}, low level features are utilized with high priority. The benchmark dataset NSL-KDD is used for evaluation, which is a new version of dataset KDDCUP'99\cite{cup2007available} and has significant improvements compared with KDDcup99\cite{tavallaee2009detailed}.
+
+The rest of the paper is organized as follows.
+
+\section{Related Work}
+\section{Methodology}
+\section{Experiments}
+\section{Conclusion}
+
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{security} 
