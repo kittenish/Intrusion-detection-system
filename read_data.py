@@ -57,13 +57,17 @@ def read_data(url):
 			label_2[i,0] = 1
 		#label_23[i, 0] = label_all[l]
 		#label_5[i, 0] = label_part[label_ca[l]]
-
+		
 		i = i + 1
 		line = f.readline()
-	print i 
+	#print i 
 	f.close()
 	np.savez('./feature/test.npz', feature=feature, label_2=label_2, label_5=label_5, label_23=label_23)
 
 if __name__ == '__main__':
-	url = './NSL_KDD/KDDTest+.txt'
+	url = './NSL_KDD/KDDTrain+.txt'
 	read_data(url)
+
+
+#train size: 125973
+#test size: 22544
