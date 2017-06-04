@@ -10,12 +10,8 @@ def split_data(url, tcp_finger, label_2):
 	while line:
 		line = line.split(',')
 		temp = str(line[1]) + '_' + str(line[2]) 
-
-		# if package.has_key(temp):			
-		# 	package[temp] = package[temp] + 1
-		# else:
-		# 	package[temp] = 1
-		if temp == 'tcp_smtp':
+		
+		if temp == 'icmp_eco_i':
 			line[3] = flag[line[3]]
 			tcp_finger[i,0] = line[0]
 			tcp_finger[i,1:] = line[3:41]
@@ -30,13 +26,13 @@ def split_data(url, tcp_finger, label_2):
 
 if __name__ == '__main__':
 	
-	tcp_finger_train = np.zeros([7313, 39])
-	label_2_train = np.zeros([1, 7313])
+	tcp_finger_train = np.zeros([4586, 39])
+	label_2_train = np.zeros([1, 4586])
 	url = './NSL_KDD/KDDTrain+.txt'
 	tcp_finger_train, label_2_train = split_data(url, tcp_finger_train, label_2_train)
-	tcp_finger_test = np.zeros([934, 39])
-	label_2_test = np.zeros([1, 934])
+	tcp_finger_test = np.zeros([262, 39])
+	label_2_test = np.zeros([1, 262])
 	url = './NSL_KDD/KDDTest+.txt'
 	tcp_finger_test, label_2_test = split_data(url, tcp_finger_test, label_2_test)
 	
-	np.savez('./feature/tcp_smtp.npz', x_train=tcp_finger_train, x_test=tcp_finger_test, y_train=label_2_train, y_test=label_2_test)
+	np.savez('./feature/icmp_eco_i.npz', x_train=tcp_finger_train, x_test=tcp_finger_test, y_train=label_2_train, y_test=label_2_test)

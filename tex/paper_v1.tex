@@ -8,6 +8,8 @@
 \usepackage{color}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{multicol}
 
 \makeatletter
 
@@ -54,14 +56,14 @@
 \author{Jiarui~Gao$^1$}
 
 \affiliation{
-\institution{  $^1$School of Computer Science, Shanghai Key Laboratory of Intelligent Information Processing,\\ Fudan University, China}   
+\institution{$^1$School of Computer Science, Shanghai Key Laboratory of Intelligent Information Processing,\\ Fudan University, China}   
 }
-\email{  jrgao14@fudan.edu.cn}   
+\email{jrgao14@fudan.edu.cn}   
 
 
 \begin{abstract} 
 
-The aim of Intrusion Detection System(IDS) is to maximize detection accuracy as well as minimize corresponding costs. In this paper, I present a cost-based approach utilizing neural network with GPU acceleration for fast intrusion detection. In this approach, both computational cost and feature cost are considered, and models are trained with respect to their different protocol types and services. Empirical experiments are carried out on off-line benchmark dataset NSL-KDD.
+The aim of Intrusion Detection System(IDS) is to maximize detection accuracy as well as minimize corresponding costs. In this paper, I present a cost-based approach utilizing neural network with GPU acceleration for fast intrusion detection. In this approach, both computational cost and time cost are considered, and models are trained with respect to their different protocol types and services. Empirical experiments are carried out on off-line benchmark dataset NSL-KDD.
 
 \end{abstract}
 \keywords{Neural network; Intrusion detection; anomaly detection; cost analysis.}
@@ -80,14 +82,150 @@ Also with respect for using environment, IDSs can be used in real-time environme
 However, these systems fail to provide real time information, which means they can only detect intrusions after they already happened. The challenge for real-time IDSs is the huge cost brought with the detection.
 
 In this paper, the aim is to develop a IDS which can be utilized in real-time environment with high detection accuracy. I present a cost-based approach for anomaly intrusion detection. The traditional machine learning models are replaced by neural networks, which enable the computational cost to be minimized utilizing GPU acceleration. 
-Also, the feature cost is considered, and according to the feature cost theory in \cite{lee2001real}, low level features are utilized with high priority. The benchmark dataset NSL-KDD is used for evaluation, which is a new version of dataset KDDCUP'99\cite{cup2007available} and has significant improvements compared with KDDcup99\cite{tavallaee2009detailed}.
+Also, the time cost is considered, and according to the time cost theory in \cite{lee2001real}, low level features are utilized with high priority. The benchmark dataset NSL-KDD is used for evaluation, which is a new version of dataset KDDCUP'99\cite{cup2007available} and has significant improvements compared with KDDcup99\cite{tavallaee2009detailed}.
 
-The rest of the paper is organized as follows.
+The rest of the paper is organized as follows. Sec \ref{sec:relatedwork} gives a detailed review of current related work about intrusion detection. In Sec \ref{sec:methodology}, the new approach for intrusion detection is introduced. The experimental results are reported in Sec \ref{sec:experiment}. More future work is presented in Sec \ref{sec:futurework}. Finally, a conclusion is drew in Sec \ref{sec:conclusion}.
 
-\section{Related Work}
-\section{Methodology}
-\section{Experiments}
-\section{Conclusion}
+\section{Related Work}\label{sec:relatedwork}
+\subsection{Detection Methodology}
+\subsection{Machine Learning for Intrusion Detection}
+\subsection{Public Datasets}\label{sec:publicdatasets}
+
+\section{Methodology}\label{sec:methodology}
+
+As shown in Fig \ref{fig:overview}, a multi-model detector is presented here.
+
+\begin{figure*}[t]
+\begin{centering}
+\includegraphics[scale=0.5]{img/overview}
+\par\end{centering}
+\caption{\label{fig:overview} An overview of the detection framework including the decision tree(top part) and the neural networks(bottom part). The total number of models are calculated on NSL-KDD dataset.}
+\end{figure*}
+
+
+\subsection{Cost Analysis}
+
+\textbf{Computational Cost.}\quad One of the major challenges in real-time IDSs is the computational cost attached with the system. For example, the well-known K-nearest Neighbor Classifier\cite{liao2002use} performs well on off-line datasets, but it is not an appropriate detector in real time. Because the
+KNNC calculates the similarity between the new 
+process and each process in the training set to decide the label of the new process. So KNNC is computationally
+expensive when the incoming number of processes is huge.
+
+Traditionally, less features and models with less parameters will lead to low computational cost. However, this may also result in lower detection accuracy or higher false alarm rate. Different from former approaches, utilizing deep neural networks, the computing tasks can be accelerated on GPU\cite{chetlur2014cudnn}. Also, the ability to represent any non-linear function in very few hidden layers and hidden neurons make the computational expense even less.
+
+\noindent\textbf{Time Cost.}\quad It is obvious that the time delay for retrieving features simply from a network packet and extracting information from all former similar connections within a time period are quite different. Different from\cite{lee2001real}, the connection based features are utilized according to\cite{lee2001real} in this paper.
+
+\begin{itemize}
+\item Level 1 features are basic features of individual TCP connections.
+\item Level 2 features are content features within a connection suggested by domain knowledge.
+\item Level 3 features are traffic features computed using a two-second time window.
+\end{itemize}
+
+Notice that the Level 3 features require iteration from the entire former two-second packet set, the time cost is extremely high. Also, all the Level 3 features for connections coming at the same time can also be computed at the same time.
+
+The lower level features are first used, and if the confidence of the classification is less than a threshold $\theta$, higher level features are extracted and are used combined with other lower level features. For example, both Level 1 and Level 2 features are considered after extracting the Level 2 features.
+
+\subsection{Neural Network Detectors}
+
+Packets with different protocol types and different services tend to have different signatures to be malicious. So neural network models are trained for each protocol type and service respectively.
+Thus for each new connection, its protocol type and service decides which detector to use. This model selection framework can be modeled by a decision tree. 
+
+Neural network models with only one hidden layer is utilized in this paper, and the following experiments proves their capability for intrusion detection with such simple architectures.
+
+\section{Experiments}\label{sec:experiment}
+\subsection{Dataset}
+As mentioned in Sec \ref{sec:publicdatasets}, NSL-KDD dataset consists of the selected records of the KDDCUP'99 dataset, which is more challenging to detect compared with the original widely used benchmark KDDCUP'99 dataset. 
+The NLS-KDD dataset solves the issues of models trained on KDDCUP'99 dataset, which have high seemingly accuracy but actually poor capability of anomaly detection.
+
+All the features in NSL-KDD dataset are considered in this paper except the additional feature: detection difficulty, which is generalized by statistical analysis for the KDDCUP'99 dataset\cite{tavallaee2009detailed}. Totally, there are $61$ different TCP services, $5$ different UDP services and $6$ different ICMP services.
+
+\subsection{Parameter setting}
+All the code is implemented in Python utilizing deep learning framework Tensorflow, and the neural network models are trained on one GPU GeForce GTX TITAN X for $5000$ epochs with early stop policy. All the neural networks consist of $1$ hidden layer, and the number of hidden neurons are set specifically for every model. The initial learning rate is $\eta = 0.0001$ and dropout ratio is $0.75$. Finally, a softmax layer with two output values is utilized to calculate loss and Adam\cite{kingma2014adam} is used to accelerate learning.
+
+\subsection{Baseline}
+Support Vector Machine(SVM) is utilized as a baseline method for each model respectively. The code are implemented in Python on Scikit-learn Library. And the following baseline results are evaluated on the same server with the proposed approach without GPU support for SVM method.
+
+\subsection{Detection Results}
+Due to the coming deadline issue, I have only finished part of the experiments.
+
+\textbf{Detection Accuracy.}
+Tab \ref{tab:detection-accuracy} demonstrates the detection accuracy for each level of features. And apart from the over all accuracy, I take three representative protocol type and service(TCP finger/UDP domain\_u/ICMP eco\_i) as examples.
+
+Observed from Tab \ref{tab:detection-accuracy}, we can see that SVM models and neural network models perform nearly the same on most of the detections. But neural network models demonstrate a good property that as the level of features get higher, the accuracies never decay; while the SVM method present less stability. 
+
+Also, we can observe that the decision tree idea that to detect different protocol types and service with different models is quite reasonable. In Tab \ref{tab:detection-accuracy}, huge accuracy improvement has been made thanks to this separation.
+
+\begin{table*}
+
+\caption{\label{tab:detection-accuracy}Detection Accuracy Results.}
+\centering{}
+\begin{tabular}{ccccc}
+
+\hline 
+Methods/Features & Over all & TCP finger & UDP domain\_u & ICMP eco\_i \tabularnewline
+\hline
+\textbf{Level 1 Features} \tabularnewline
+SVM & $78.20\%$ & $99.26\%$ & $99.33\%$ & $94.27\%$ \tabularnewline
+Ours & $77.26\%$ & $99.26\%$ & $99.33\%$ & $94.27\%$\tabularnewline
+\hline
+
+\textbf{Level 2 Features} \tabularnewline
+ 
+SVM & $81.39\%$ & $97.06\%$ & $99.55\%$ & $94.27\%$\tabularnewline
+Ours & $80.67\%$ & $99.26\%$ & $99.78\%$ & $94.27\%$\tabularnewline
+\hline
+
+\textbf{Level 3 Features} \tabularnewline
+  
+SVM & $80.57\%$ & $99.26\%$ & $99.78\%$ & $98.09\%$\tabularnewline
+Ours & $76.24\%$ & $99.26\%$ & $99.78\%$ & $98.89\%$\tabularnewline
+\hline
+\end{tabular}
+\end{table*}
+
+\textbf{Cost Analysis.}
+Tab \ref{tab:cost} demonstrates the \textbf{computational cost} for each level of features. The same as former experiments, three representative protocol type and service are selected. Notice here I report the average time for computing single one packet feature item. 
+
+It can be noticed that significant improvement have been on computational cost utilizing neural network models, which is quite important in real time detection ability for the IDSs.
+
+Also, the \textbf{time cost} is considered. Each new packet are first detected according to their Level 1 features. If the confidence of the classification, which is the larger value of the two output neurons is less than $\theta=0.8$, than the higher features are extracted and higher level models are used. 
+In the worst case, the packet will eventually get its label through Level 3 models. And more additional computational cost will also be spent. 
+
+The total cost is the sum of computational cost and time cost, which is much more efficient compared with simply using Level 3 features for all the packets.
+
+\begin{table*}
+
+\caption{\label{tab:cost}Computational Cost Results.}
+\centering{}
+\begin{tabular}{ccccc}
+
+\hline 
+Methods/Features & Over all & TCP finger & UDP domain\_u & ICMP eco\_i \tabularnewline
+\hline
+\textbf{Level 1 Features} \tabularnewline
+SVM & $4.2*10^{-4}s$ & $4.4*10^{-6}s$ & $9.2*10^{-7}s$ & $5.7*10^{-7}s$ \tabularnewline
+Ours & $5.4*10^{-8}s$ & $2.7*10^{-6}s$ & $4.3*10^{-7}s$ & $1.4*10^{-6}s$\tabularnewline
+\hline
+
+\textbf{Level 2 Features} \tabularnewline
+ 
+SVM & $5.9*10^{-4}s$ & $7.3*10^{-6}s$ & $1.3*10^{-6}s$ & $1.3*10^{-6}s$\tabularnewline
+Ours & $7.0*10^{-8}s$ & $2.7*10^{-6}s$ & $4.6*10^{-7}s$ & $1.4*10^{-6}s$\tabularnewline
+\hline
+
+\textbf{Level 3 Features} \tabularnewline
+  
+SVM & $2.3*10^{-4}s$ & $7.2*10^{-6}s$ & $4.1*10^{-6}s$ & $6.2*10^{-6}s$\tabularnewline
+Ours & $1.0*10^{-7}s$ & $2.8*10^{-6}s$ & $5.2*10^{-7}s$ & $1.5*10^{-6}s$\tabularnewline
+\hline
+\end{tabular}
+\end{table*}
+
+
+\section{Future Work}\label{sec:futurework}
+
+
+
+\section{Conclusion}\label{sec:conclusion}
 
 
 \bibliographystyle{ACM-Reference-Format}

@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from tf_utils import weight_variable, bias_variable, dense_to_one_hot, weight_variable_cnn
+import time
 
 train = np.load('./feature/train.npz')
 test = np.load('./feature/test.npz')
@@ -65,6 +66,9 @@ for epoch_i in range(n_epochs):
 
         sess.run(optimizer, feed_dict={
             x: batch_xs, y: batch_ys, keep_prob: 0.75})
+    time1 = time.time()
     print('test (%d): ' % epoch_i + str(sess.run(accuracy,feed_dict={x: X_test,y: Y_test,keep_prob: 1.0})))
-    grad_vals = sess.run([g for (g,v) in grads], feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.0})
-    print 'grad_vals: ', grad_vals
+    time2 = time.time()
+    print float(time2 - time1) / float(len(y_test))
+    # grad_vals = sess.run([g for (g,v) in grads], feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.0})
+    # print 'grad_vals: ', grad_vals

@@ -3,12 +3,13 @@ from sklearn import svm
 from process_data import znormalization
 import time
 
-data = np.load('./feature/tcp_finger.npz')
+train = np.load('./feature/train.npz')
+test = np.load('./feature/test.npz')
 
-x_train = data['x_train'][:,0:7]
-y_train = data['y_train'].ravel()
-x_test = data['x_test'][:,0:7]
-y_test = data['y_test'].ravel()
+x_train = train['feature'][:,0:7]
+y_train = train['label_2'].ravel()
+x_test = test['feature'][:,0:7]
+y_test = test['label_2'].ravel()
 
 X_train = znormalization(x_train)
 X_test = znormalization(x_test)
