@@ -6,10 +6,11 @@ from shuffle_data import shuffle
 import time
 
 data = np.load('./feature/tcp_finger.npz')
+opt = 39
 
-x_train = data['x_train'][:,0:7]
+x_train = data['x_train'][:,0:opt]
 y_train = data['y_train'].ravel()
-x_test = data['x_test'][:,0:7]
+x_test = data['x_test'][:,0:opt]
 y_test = data['y_test'].ravel()
 
 X_train = znormalization(x_train)
@@ -17,19 +18,19 @@ X_test = znormalization(x_test)
 X_train = np.nan_to_num(X_train)
 X_test = np.nan_to_num(X_test)
 
-[X_train, y_train] = shuffle(X_train, y_train, x_train.shape[0])
+[X_train, y_train] = shuffle(X_train, y_train, x_train.shape[0], opt)
 Y_train = dense_to_one_hot(y_train, n_classes=2)
 Y_test = dense_to_one_hot(y_test, n_classes=2)
 
-x = tf.placeholder(tf.float32, [None, 7])
+x = tf.placeholder(tf.float32, [None, opt])
 y = tf.placeholder(tf.float32,[None, 2])
 keep_prob = tf.placeholder(tf.float32)
 
-W_fc1 = weight_variable_cnn([7, 5])
-b_fc1 = bias_variable([5])
+W_fc1 = weight_variable_cnn([opt, 8])
+b_fc1 = bias_variable([8])
 h_fc1 = tf.nn.tanh(tf.matmul(x, W_fc1) + b_fc1)
 h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
-W_fc2 = weight_variable_cnn([5, 2])
+W_fc2 = weight_variable_cnn([8, 2])
 b_fc2 = bias_variable([2])
 h_fc2 = tf.nn.tanh(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)
 
@@ -53,6 +54,7 @@ train_size = x_train.shape[0]
 
 indices = np.linspace(0, train_size - 1, iter_per_epoch)
 indices = indices.astype('int')
+time_sum = 0
 
 for epoch_i in range(n_epochs):
     for iter_i in range(iter_per_epoch - 1):
@@ -64,7 +66,7 @@ for epoch_i in range(n_epochs):
                             feed_dict={
                                 x: batch_xs,
                                 y: batch_ys,
-                                keep_prob: 1.0
+                                keep_prob: 0.75
                             })
             print('Iteration: ' + str(iter_i) + ' Loss: ' + str(loss))
 
@@ -73,9 +75,9 @@ for epoch_i in range(n_epochs):
     time1 = time.time()
     print('test (%d): ' % epoch_i + str(sess.run(accuracy,feed_dict={x: X_test,y: Y_test,keep_prob: 1.0})))
     time2 = time.time()
-    print float(time2 - time1) / float(len(y_test))
+    time_sum = time_sum + float(time2 - time1) / float(len(y_test))
     # grad_vals = sess.run([g for (g,v) in grads], feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.0})
     # print 'grad_vals: ', grad_vals
     # theta = sess.run(h_fc1, feed_dict={x: batch_xs, keep_prob: 1.0})
     # print theta
-    
+print time_sum/n_epochs

@@ -88,7 +88,11 @@ The rest of the paper is organized as follows. Sec \ref{sec:relatedwork} gives a
 
 \section{Related Work}\label{sec:relatedwork}
 \subsection{Detection Methodology}
+
+
 \subsection{Machine Learning for Intrusion Detection}
+
+
 \subsection{Public Datasets}\label{sec:publicdatasets}
 
 \section{Methodology}\label{sec:methodology}
@@ -222,8 +226,19 @@ Ours & $1.0*10^{-7}s$ & $2.8*10^{-6}s$ & $5.2*10^{-7}s$ & $1.5*10^{-6}s$\tabular
 
 
 \section{Future Work}\label{sec:futurework}
+As mentioned in Sec \ref{sec:experiment}, due to the coming deadline, some of the experiments are not completely finished. 
 
+The future work for this paper is listed as follows:
+\begin{itemize}
+\item Calculate the average performance for all the models, not for only some examples.
+\item Measure the specific improvement made by distinguishing different level of features quantitatively, such as calculate the exact cost saved for detecting some packets.
+\end{itemize}
 
+There are also some practical need to be solved for further implementation:
+\begin{itemize}
+\item There are some protocol type and service with very few training data, such as TCP pm\_dump, UDP tftp\_u and ICMP urh\_i etc. This issue will make it impossible to train a neural network model. Maybe some signature-based technique are needed here.
+\item It will cost too much time to train and tune parameters for every model, specifically $72$ models in NSL-KDD dataset. But currently I just train the example models manually.
+\end{itemize}
 
 \section{Conclusion}\label{sec:conclusion}
 
