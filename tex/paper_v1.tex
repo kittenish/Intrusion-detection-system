@@ -267,7 +267,7 @@ Ours & $76.24\%$ & $99.26\%$ & $99.78\%$ & $98.89\%$\tabularnewline
 \subsubsection{False Alarm Rates.}
 Tab \ref{tab:detection-false-alarm} demonstrates the false alarm rates for each level of features. As mentioned before, three representative protocol type and service are presented.
 
-As observed, the false alarm rates decay as the increasing level of features.
+As observed, the false alarm rates tends to decay as the increasing level of features. Especially, for the ICMP eco\_i models, the false alarm rates decay significantly for Level 3 features. For these type of situations, the extraction of high level features is necessary.
 
 \begin{table*}
 
@@ -280,19 +280,19 @@ Methods/Features & Over all & TCP finger & UDP domain\_u & ICMP eco\_i \tabularn
 \hline
 \textbf{Level 1 Features} \tabularnewline
 SVM & $3.86\%$ & $0.00\%$ & $0.67\%$ & $57.69\%$ \tabularnewline
-Ours & $4.40\%$ & $99.26\%$ & $99.33\%$ & $94.27\%$\tabularnewline
+Ours & $4.40\%$ & $0.00\%$ & $0.67\%$ & $57.69\%$\tabularnewline
 \hline
 
 \textbf{Level 2 Features} \tabularnewline
  
-SVM & $81.39\%$ & $0.00\%$ & $0.45\%$ & $57.69\%$\tabularnewline
-Ours & $3.49\%$ & $99.26\%$ & $99.78\%$ & $94.27\%$\tabularnewline
+SVM & $1.81\%$ & $0.00\%$ & $0.45\%$ & $57.69\%$\tabularnewline
+Ours & $3.49\%$ & $0.00\%$ & $0.45\%$ & $57.69\%$\tabularnewline
 \hline
 
 \textbf{Level 3 Features} \tabularnewline
   
 SVM & $2.19\%$ & $0.00\%$ & $0.00\%$ & $19.23\%$\tabularnewline
-Ours & $6.64\%$ & $99.26\%$ & $99.78\%$ & $98.89\%$\tabularnewline
+Ours & $6.64\%$ & $0.00\%$ & $0.00\%$ & $7.69\%$\tabularnewline
 \hline
 \end{tabular}
 \end{table*}

@@ -35,6 +35,7 @@ b_fc2 = bias_variable([2])
 h_fc2 = tf.nn.tanh(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)
 
 y_logits = h_fc2
+result = tf.argmax(y_logits, 1)
 
 cross_entropy = tf.reduce_mean(
     tf.nn.softmax_cross_entropy_with_logits(y_logits, y))
@@ -72,12 +73,18 @@ for epoch_i in range(n_epochs):
 
         sess.run(optimizer, feed_dict={
             x: batch_xs, y: batch_ys, keep_prob: 0.75})
-    time1 = time.time()
-    print('test (%d): ' % epoch_i + str(sess.run(accuracy,feed_dict={x: X_test,y: Y_test,keep_prob: 1.0})))
-    time2 = time.time()
-    time_sum = time_sum + float(time2 - time1) / float(len(y_test))
+    #time1 = time.time()
+    acc = sess.run(accuracy,feed_dict={x: X_test,y: Y_test,keep_prob: 1.0})
+    print('test (%d): ' % epoch_i + str(acc))
+    #time2 = time.time()
+    #time_sum = time_sum + float(time2 - time1) / float(len(y_test))
     # grad_vals = sess.run([g for (g,v) in grads], feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.0})
     # print 'grad_vals: ', grad_vals
-    # theta = sess.run(h_fc1, feed_dict={x: batch_xs, keep_prob: 1.0})
-    # print theta
+    if acc > 0.98:
+        fp = 0
+        predict = sess.run(result,feed_dict={x: X_test,y: Y_test,keep_prob: 1.0})
+        for i in range(len(predict)):
+            if y_test[i] == 0 and predict[i] == 1:
+                fp = fp + 1
+        print float(fp) / float(sum(y_test==0))
 print time_sum/n_epochs
