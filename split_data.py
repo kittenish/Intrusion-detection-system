@@ -10,7 +10,8 @@ def split_data(url, tcp_finger, label_2):
 	while line:
 		line = line.split(',')
 		temp = str(line[1]) + '_' + str(line[2]) 
-		
+		if not package.has_key(temp):
+			package[temp] = 1
 		if temp == 'icmp_eco_i':
 			line[3] = flag[line[3]]
 			tcp_finger[i,0] = line[0]
@@ -21,7 +22,7 @@ def split_data(url, tcp_finger, label_2):
 				label_2[0, i] = 1
 			i = i + 1
 		line = f.readline()
-	print i
+	print sorted(package)
 	return tcp_finger, label_2
 
 if __name__ == '__main__':
@@ -35,4 +36,4 @@ if __name__ == '__main__':
 	url = './NSL_KDD/KDDTest+.txt'
 	tcp_finger_test, label_2_test = split_data(url, tcp_finger_test, label_2_test)
 	
-	np.savez('./feature/icmp_eco_i.npz', x_train=tcp_finger_train, x_test=tcp_finger_test, y_train=label_2_train, y_test=label_2_test)
+	#np.savez('./feature/icmp_eco_i.npz', x_train=tcp_finger_train, x_test=tcp_finger_test, y_train=label_2_train, y_test=label_2_test)

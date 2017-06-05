@@ -142,7 +142,7 @@ Ensemble learning methods are extensively utilized in intrusion detection\cite{z
 
 \vspace{6pt}
 
-In the approach proposed in this paper, both the supervised learning and ensemble learning methods are employed, namely, the decision tree model and the neural networks model. Empirically, this combination demonstrates a great improvement compared with using single model for prediction.
+In the approach proposed in this paper, both the supervised learning and ensemble learning methods are employed. The combination of decision tree model and neural networks model demonstrates a great improvement compared with using single model for prediction in NSL-KDD dataset.
 
 \subsection{Public Datasets}\label{sec:publicdatasets}
 
@@ -160,6 +160,9 @@ As suggested in \cite{tavallaee2009detailed}, the original KDD Cup 1999 dataset 
 The ADFA Intrusion Detection Datasets cover both Linux and Windows\cite{creech2013generation}. Different from former introduced datasets, ADFA contains raw system call traces. 
 A new host-based anomaly intrusion detection methodology is evaluated on ADFD\cite{creech2014semantic}, which utilizing discontiguous system call patterns to increase detection rates whilst reducing false alarm rates. Also, excellent results are demonstrated.
 
+\subsubsection{UNB ISCX 2012 Intrusion Detection Evaluation Dataset}
+This dataset is proposed in \cite{shiravi2012toward}. According to \cite{shiravi2012toward}, this labeled dataset consists of realistic network and traffic with complete capture. Also, diverse intrusion scenarios are included. This dataset demonstrate a good performance in the comparison with other existing datasets.
+
 \section{Methodology}\label{sec:methodology}
 
 As shown in Fig \ref{fig:overview}, a multi-model detector is presented here. Based on a decision tree structure, different models are used for every kind of packets with different protocol types and services.
@@ -167,7 +170,7 @@ And neural network models are trained for each level of features respectively.
 
 \begin{figure*}[t]
 \begin{centering}
-\includegraphics[scale=0.55]{img/overview}
+\includegraphics[scale=0.55]{img/overview-new}
 \par\end{centering}
 \caption{\label{fig:overview} An overview of the detection framework including the decision tree(top part) and the neural networks(bottom part). The total number of models are calculated on NSL-KDD dataset.}
 \end{figure*}
@@ -233,7 +236,7 @@ For example, both Level 1 and Level 2 features are considered after extracting t
 Packets with different protocol types and different services tend to have different signatures to be malicious.
 Thus different detectors should be trained, and for each new packet, its protocol type and service decides which detector to use. This model selection framework can be modeled by a decision tree. 
 
-As shown in Fig \ref{fig:overview}, the decision has very simple architecture in the proposed approach.
+As shown in Fig \ref{fig:overview}, the decision tree has very simple architecture in the proposed approach.
 
 \subsection{Neural Network Detectors}
 
@@ -272,7 +275,7 @@ Support Vector Machine(SVM) is employed as a baseline method for each model resp
 \subsection{Detection Results}
 Due to the coming deadline issue, I have only finished part of the experiments.
 
-\subsubsection{Detection Accuracy.}
+\subsubsection{Detection Accuracy}
 Tab \ref{tab:detection-accuracy} demonstrates the detection accuracy for each level of features. And apart from the over all accuracy, I take three representative protocol type and service(TCP finger/UDP domain\_u/ICMP eco\_i) as examples.
 
 Observed from Tab \ref{tab:detection-accuracy}, we can see that SVM models and neural network models perform nearly the same on most of the detections. But neural network models demonstrate a good property on the three examples that as the level of features get higher, the accuracies never decay; while the SVM method present less stability. Actually, this property is quite important in the proposed approach, because the accuracy decay on higher feature level will result in some eventual detection results to be wrong. Since the results for packets that cannot be classified confidently by the lower feature level models are decided finally by the higher feature level models. Also, lots of time cost will be wasted for no improvement in detection accuracy.
@@ -307,14 +310,14 @@ Ours & $76.24\%$ & $99.26\%$ & $99.78\%$ & $98.89\%$\tabularnewline
 \end{tabular}
 \end{table*}
 
-\subsubsection{False Alarm Rates.}
+\subsubsection{False Alarm Rates}
 Tab \ref{tab:detection-false-alarm} demonstrates the false alarm rates for each level of features. As mentioned before, three representative protocol type and service are presented.
 
 As observed, the false alarm rates tends to decay as the increasing level of features. Especially, for the ICMP eco\_i models, the false alarm rates decay significantly for Level 3 features. For these type of situations, the extraction of high level features is necessary.
 
 \begin{table*}
 
-\caption{\label{tab:detection-false-alarm}Detection False Alarm Rates.}
+\caption{\label{tab:detection-false-alarm}Detection False Alarm Rates}
 \centering{}
 \begin{tabular}{ccccc}
 
@@ -388,6 +391,7 @@ The future work for this paper is listed as follows:
 \item Calculate the average performance for all the models, not for only some examples.
 \item Measure the specific improvement made by distinguishing different level of features quantitatively, such as calculate the exact cost saved for detecting some packets.
 \item Try more specific detection results than just normal and anomaly classification. Actually, the NSL-KDD dataset provides the labels of the specific attack types for each connection.
+\item The experiments are originally planned to conducted on the UNB ISCX IDS 2012 dataset, which is the up-to-date dataset for intrusion detection. However, it may take months to get the dataset following the procedures on the official website. But still, more experiments should be conducted on this new dataset before making any conclusions.
 \end{itemize}
 
 \subsection{More Issues}
@@ -396,6 +400,7 @@ There are also some practical issues need to be solved for further implementatio
 \item There are some protocol type and service with very few training data, such as TCP pm\_dump, UDP tftp\_u and ICMP urh\_i etc. This issue will make it impossible to train a neural network model. Maybe some signature-based technique are needed here.
 \item It will cost too much time to train and tune parameters for every model, specifically $72$ models in NSL-KDD dataset. But currently I just train the example models manually.
 \item Utilizing the features in NSL-KDD makes the detection in this paper to be connection based, which means that the intrusion can only be detected after all the packages in one connection have arrived. Actually, as suggested in\cite{lee2001real}, some intrusion can be detected only after the first package or a few packages are sent, which is capable to reduce the time cost even more. So extracting more package based features for model training can be considered as another improvement.
+\item The datasets that are extensively used currently are still the simulations two decades ago, which makes the models analyzed in these papers unsuitable for detecting newly appeared attacks in recent years. So more datasets are urgently needed in the field of intrusion detection.
 \end{itemize}
 
 \section{Conclusion}\label{sec:conclusion}
@@ -403,7 +408,7 @@ In this paper, a new cost-based approach for fast intrusion detection is propose
 
 However, as mentioned in Sec \ref{sec:futurework}, there still remains many issues to be solved for IDSs, such as how to detect intrusion only after a few packages have been received, and how to accurately detect zero-day attacks. Also, more attack simulations need to be organized to test the IDSs before they are actually employed in the real environment, since any crash in IDSs may leads to severe network problems. 
 
-After accomplishing the rest experiments, further research will focus on solving the mentioned issues in Sec \ref{sec:futurework}. 
+After accomplishing the rest experiments, further research will focus on solving the mentioned issues in Sec \ref{sec:futurework}.  
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{security} 
