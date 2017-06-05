@@ -88,6 +88,17 @@ Also, the time cost is considered, and according to the time cost theory in \cit
 The rest of the paper is organized as follows. Sec \ref{sec:relatedwork} gives a detailed review of current related work about intrusion detection. In Sec \ref{sec:methodology}, the new approach for intrusion detection is introduced. The experimental results are reported in Sec \ref{sec:experiment}. More future work is presented in Sec \ref{sec:futurework}. Finally, a conclusion is drew in Sec \ref{sec:conclusion}.
 
 \section{Related Work}\label{sec:relatedwork}
+\subsection{Intrusion Types}
+According to KDD Cup 1999 dataset\cite{tavallaee2009detailed}, all the simulated attacks are classified into four categories:
+
+\begin{itemize}
+\item \textbf{Denial of Service Attack (DoS):} This type of attack aims at making the target computer's service unavailable to its legitimate users by increasing the number of significant resource demanding process to exhaust the target's network bandwidth , CPU load, memory and etc\cite{bhuyan2014detecting}. However, with the development of detection and IP tracking techniques, old single source attacks can be easily detected and the source can be rebuffed or shut down. A distributed Dos(DDos) attack attack technique has been developed, which is very difficult to defend. This survey\cite{zargar2013survey} is highly recommended for more information.
+\item \textbf{User to Root Attack (U2R)} This type of attack refer to the behavior that the attackers trying to gain root access in the system. Usually the attacker entrance the system as a normal user first and try to exploit some vulnerabilities in the system.
+\item \textbf{Remote to Local Attack (R2L):} This type of attacks occurs when an attacker send packets to a remote server where the attacker have no legitimate accounts over a network to gain local access as a legitimate user\cite{mukkamala2005intrusion}. Usually, this illegal accesses are gained by exploiting vulnerabilities of the server by the attackers.
+\item \textbf{Probing Attack:} This type of attacks are basically an information collection behavior. The attacker scans the computers in a network to gather information or to exploit vulnerabilities.
+For IDSs specially designed for probing attacks, this work \cite{zargar2009identification} is recommended.
+\end{itemize}
+
 \subsection{Detection Methodology}
 Basically, there are three types of intrusion detection techniques: misuse-based, anomaly-based, and hybrid\cite{buczak2016survey}. Hybrid techniques are a combination for the two former techniques.
 
@@ -121,7 +132,7 @@ In this section present a brief introduce of the utilization of machine learning
 \subsubsection{Supervised Learning}
 Supervised learning can be divided into generative models and deterministic models, and both contain plenty of proposed models. Some of the popular supervised learning methods are listed as follows: Artificial Neural Network, Bayesian Network, Decision Tree, Genetic Algorithms, Hidden Markov Models, Naive Bayes, Support Vector Machine etc. 
 
-Nearly all the former techniques in supervised learning are used in intrusion detection\cite{ingre2015performance}\cite{sommer2010outside}\cite{qiao2002anomaly}. Both the computational complexity and concrete introduction of the former techniques can be found in this work\cite{buczak2016survey}.
+Nearly all the former techniques in supervised learning are used in intrusion detection\cite{ingre2015performance}\cite{sommer2010outside}\cite{qiao2002anomaly}. Both the computational complexity and concrete introduction of the former techniques can be found in \cite{buczak2016survey} and \cite{tsai2009intrusion}.
 
 \subsubsection{Unsupervised Learning}
 One of the most frequently used techniques is \textbf{clustering}.  
@@ -196,7 +207,7 @@ It is obvious that the time delay for retrieving features simply from a network 
 
 \begin{table*}
 
-\caption{\label{tab:feature}Levels of Features.}
+\caption{\label{tab:feature}Features in Different Levels.}
 \centering{}
 \begin{tabular}{c|c|c}
 
@@ -270,7 +281,7 @@ The data preprocessing method z-normalization is employed.
 All the code for the neural network models is implemented in Python utilizing deep learning framework Tensorflow, and the neural network models are trained on one GPU GeForce GTX TITAN X for $5000$ epochs with early stop policy. All the neural networks consist of $1$ hidden layer, and the number of hidden neurons are set specifically for every model. The initial learning rate is $\eta = 0.0001$ and dropout ratio is $0.75$ to avoid over fitting. Finally, a softmax layer is utilized to calculate loss and Adam\cite{kingma2014adam} is employed to accelerate learning. The prediction results of the models are the values of the two output neurons.
 
 \subsection{Baseline}
-Support Vector Machine(SVM) is employed as a baseline method for each model respectively. The code are implemented in Python on Scikit-learn Library. And the following baseline results are evaluated on the same server with the proposed approach without GPU support for SVM method.
+Support Vector Machine(SVM) is employed as a baseline method for each model respectively. The code are implemented in Python on Scikit-learn Library. And the following baseline results are evaluated on the same server with the proposed approach without GPU support for SVM method. Also, empirically, the SVM models are also combined with the same decision tree model in the proposed approach to accomplish a comparative result.
 
 \subsection{Detection Results}
 Due to the coming deadline issue, I have only finished part of the experiments.
