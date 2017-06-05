@@ -108,7 +108,7 @@ They are implemented aiming at decrease the false alarm rate as well as detectin
 \subsection{Feature Selection}
 The reduction of features and feature selection are very important in increasing the efficiency of the detection.
 
-This work aims at reduce the features used for misuse-based techniques\cite{chebrolu2005feature}, since the comparison between the whole packet and all the signatures can be redundant. And useful feature selection algorithms are proposed.
+This work\cite{chebrolu2005feature} aims at reduce the features used for misuse-based techniques, since the comparison between the whole packet and all the signatures can be redundant. And useful feature selection algorithms are proposed.
 Also, the features on one specific dataset KDD Cup 1999 are analyzed by comparing the relevance between each features and information gain is employed to find the most discriminating features for each class\cite{kayacik2005selecting}.
 
 Unsupervised machine learning techniques such as PCA\cite{liu2007hierarchical}\cite{lakhina2010feature} and K-means\cite{kumar2013k} are employed for feature selection. And all of these methods demonstrates good performance in feature selection.
@@ -122,7 +122,6 @@ In this section present a brief introduce of the utilization of machine learning
 Supervised learning can be divided into generative models and deterministic models, and both contain plenty of proposed models. Some of the popular supervised learning methods are listed as follows: Artificial Neural Network, Bayesian Network, Decision Tree, Genetic Algorithms, Hidden Markov Models, Naive Bayes, Support Vector Machine etc. 
 
 Nearly all the former techniques in supervised learning are used in intrusion detection\cite{ingre2015performance}\cite{sommer2010outside}\cite{qiao2002anomaly}. Both the computational complexity and concrete introduction of the former techniques can be found in this work\cite{buczak2016survey}.
-
 
 \subsubsection{Unsupervised Learning}
 One of the most frequently used techniques is \textbf{clustering}.  
@@ -139,7 +138,11 @@ Bagging and boosting are frequently used approaches in ensemble learning, \cite{
 \textbf{Boosting}\cite{freund1995desicion} basically concentrates more the mis-classified data in the modeling process. Adaptive Boosting (AdaBoost)\cite{polikar2006ensemble} is one of the most popular algorithms in boosting. 
 The \textbf{Random Forest}\cite{breiman2001random} another method that combines the decision trees and ensemble learning. The so-called forest is composed of many decision trees. 
 
-Ensemble learning is extensively used in intrusion detection\cite{zhang2008random}\cite{mukkamala2005intrusion}. The single model can be nearly all kinds of previous mentioned machine learning models.
+Ensemble learning methods are extensively utilized in intrusion detection\cite{zhang2008random}\cite{mukkamala2005intrusion}. The single model can be nearly all kinds of previous mentioned machine learning models.
+
+\vspace{6pt}
+
+In the approach proposed in this paper, both the supervised learning and ensemble learning methods are employed, namely, the decision tree model and the neural networks model. Empirically, this combination demonstrates a great improvement compared with using single model for prediction.
 
 \subsection{Public Datasets}\label{sec:publicdatasets}
 
@@ -180,13 +183,40 @@ expensive when the incoming number of packets is huge, causing the system to be 
 Traditionally, less features numbers and models with less parameters will lead to low computational cost. However, this may also result in lower detection accuracy or higher false alarm rate. Different from former approaches, utilizing deep neural networks, the computing tasks can be accelerated on GPU\cite{chetlur2014cudnn}. Also, the ability to represent any non-linear function in very few hidden layers and hidden neurons make the computational expense even less.
 
 \subsubsection{Time Cost}
-It is obvious that the time delay for retrieving features simply from a network packet and extracting information from all former similar connections within a time period are quite different. Different from\cite{lee2001real}, the connection based features are utilized according to\cite{lee2001real} in this paper.
+It is obvious that the time delay for retrieving features simply from a network packet and extracting information from all former similar connections within a time period are quite different. Different from\cite{lee2001real}, the connection based features are utilized according to\cite{lee2001real} in this paper. The exact levels of features are presented in Tab \ref{tab:feature}.
 
 \begin{itemize}
 \item Level 1 features are basic features of individual TCP connections.
 \item Level 2 features are content features within a connection suggested by domain knowledge.
 \item Level 3 features are traffic features computed using a two-second time window.
 \end{itemize}
+
+\begin{table*}
+
+\caption{\label{tab:feature}Levels of Features.}
+\centering{}
+\begin{tabular}{c|c|c}
+
+\hline 
+Level 1 Features & Level 2 Features & Level 3 Features\tabularnewline
+\hline
+Duration & Hot & Count \tabularnewline
+Protocol type & Num failed logins & Serror rate \tabularnewline
+Service & Logged in & Rerror rate \tabularnewline
+Src bytes & Num compromised & Same srv rate \tabularnewline
+Dst bytes & Root sell & Diff srv rate \tabularnewline
+Flag & Su attempted & Srv count \tabularnewline
+Land & Num root & Srv serror rate \tabularnewline
+Wrong fragment & Num file creations & Srv rerror rate \tabularnewline
+Urgent & Num shells & Srv diff host rate \tabularnewline
+ & Num access files &  \tabularnewline
+ & Num outbound cmds &  \tabularnewline
+ & Is hot login &  \tabularnewline
+ & Is guest login &  \tabularnewline
+\hline
+
+\end{tabular}
+\end{table*}
 
 Notice that the Level 3 features require iteration from the entire former two-second packet set, the time cost is extremely high compares with the lower level of features. Also, all the Level 3 features for connections coming at the same time can also be computed at the same time.
 
@@ -207,10 +237,23 @@ As shown in Fig \ref{fig:overview}, the decision has very simple architecture in
 
 \subsection{Neural Network Detectors}
 
-Neural network models are at the bottom layer for the detection process, they trained for each protocol type and service respectively. Actually due to the less complexity for packets detection, neural network models perform nearly the same as traditional classifiers. The main reason of utilizing neural network models in this paper is the excellent CPU acceleration support for deep learning libraries, which will reduce the computational cost in some extent.
+Neural network models are at the bottom layer for the detection process, they trained for each protocol type and service respectively. Actually due to the less complexity for packets detection, neural network models perform nearly the same as traditional classifiers. The main reason of utilizing neural network models in this paper is the excellent GPU acceleration support for deep learning libraries, which will reduce the computational cost in some extent.
 
 Neural network models with only one hidden layer is utilized in this paper, and the following experiments proves their capability for intrusion detection with such simple architectures.
 
+\subsection{Evaluation Methods}
+Three evaluation metrics are employed in this paper to evaluate the performance of the intrusion detection system, namely, detection accuracy, false alarm rate and total cost:
+
+\begin{itemize}
+\item Detection accuracy is simply calculated by comparing the predicted results with the ground truth labels.
+\item The false alarm rate(FAR) is defined as Eq \ref{eq:false-alarm}, in which $FP, TN$ represent false positive and true negative samples respectively.
+
+\begin{equation}\label{eq:false-alarm}
+FAR = \frac{FP}{FP+TN}
+\end{equation}
+
+\item The total cost is the sum of the computational cost and the time cost. 
+\end{itemize}
 
 \section{Experiments}\label{sec:experiment}
 \subsection{Dataset}
@@ -300,7 +343,7 @@ Ours & $6.64\%$ & $0.00\%$ & $0.00\%$ & $7.69\%$\tabularnewline
 \subsubsection{Cost Analysis.}
 Tab \ref{tab:cost} demonstrates the \textbf{computational cost} for each level of features. The same as former experiments, three representative protocol type and service are selected. Notice here I report the average time for computing single one packet feature item. 
 
-Thanks to CPU acceleration, it can be noticed that significant improvement have been made on computational cost utilizing neural network models, which is quite important in real time detection for the IDSs. Also the number of neurons in the hidden layer is reduced as small as possible, which also save the computational cost.
+Thanks to GPU acceleration, it can be noticed that significant improvement have been made on computational cost utilizing neural network models, which is quite important in real time detection for the IDSs. Also the number of neurons in the hidden layer is reduced as small as possible, which also save the computational cost.
 
 Also, \textbf{time cost} is considered. Every new packet are first detected according to their Level 1 features. If the confidence of the classification, which is the larger value of the two output neurons is less than $\theta=0.8$, than the higher features are extracted and higher level models are used. 
 In the worst case, the packet will eventually get its label through Level 3 models. And more additional computational cost will also be spent. 
@@ -358,7 +401,9 @@ There are also some practical issues need to be solved for further implementatio
 \section{Conclusion}\label{sec:conclusion}
 In this paper, a new cost-based approach for fast intrusion detection is proposed. Utilizing both decision tree models and neural network models with GPU acceleration, the proposed IDS is capable of maintaining high detecting intrusion accuracy with the minimization of both computational cost and time cost. The results are evaluated on NSL-KDD dataset, and a good performance is demonstrated in the experiments.
 
-However, there still remains many issues to be solved for IDSs, such as how to detect intrusion only after a few packages have been received, and how to accurately detect zero-day attacks. Further research will investigate to solve the mentioned issues.
+However, as mentioned in Sec \ref{sec:futurework}, there still remains many issues to be solved for IDSs, such as how to detect intrusion only after a few packages have been received, and how to accurately detect zero-day attacks. Also, more attack simulations need to be organized to test the IDSs before they are actually employed in the real environment, since any crash in IDSs may leads to severe network problems. 
+
+After accomplishing the rest experiments, further research will focus on solving the mentioned issues in Sec \ref{sec:futurework}. 
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{security} 
